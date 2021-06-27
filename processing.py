@@ -113,6 +113,11 @@ base_enade = base_enade.append(base_enade_2017)
 base_enade = base_enade.append(base_enade_2014)
 base_enade = base_enade.append(base_enade_2011)
 base_enade = base_enade.dropna()
+
+base_enade = base_enade.drop(
+    columns=['DURACAO_PERMANENCIA', 'ANO_PROVA', 'ANO_ENTRADA'], axis=1,
+)
+
 print(base_enade.describe())
 print(base_enade.isnull().sum())
 base_enade.to_csv("result.csv")
