@@ -5,10 +5,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
 
-df_2019 = pd.read_csv('data/microdados_enade_2019.txt', sep=";", na_values=[' ',''])
-df_2017 = pd.read_csv('data/MICRODADOS_ENADE_2017.txt', sep=";", na_values=[' ',''])
-df_2014 = pd.read_csv('data/MICRODADOS_ENADE_2014.txt', sep=";", na_values=[' ',''])
-df_2011 = pd.read_csv('data/MICRODADOS_ENADE_2011.txt', sep=";", na_values=[' ',''])
+df_2019 = pd.read_csv('data/microdados_enade_2019.txt', sep=';', na_values=[' ',''])
+df_2017 = pd.read_csv('data/MICRODADOS_ENADE_2017.txt', sep=';', na_values=[' ',''])
+df_2014 = pd.read_csv('data/MICRODADOS_ENADE_2014.txt', sep=';', na_values=[' ',''])
+df_2011 = pd.read_csv('data/MICRODADOS_ENADE_2011.txt', sep=';', na_values=[' ',''])
 
 
 base_enade_2019 = pd.DataFrame()
@@ -103,7 +103,7 @@ base_enade_2011['BOLSA_ESTUDANTIL'] = df_2011['QE_I10']
 base_enade_2011['TRABALHO_DURANTE_GRAD'] = df_2011['QE_I07']
 base_enade_2011['COTAS'] = df_2011['QE_I12']
 base_enade_2011['DURACAO_PERMANENCIA'] = base_enade_2011['ANO_PROVA'] - base_enade_2011['ANO_ENTRADA'] 
-base_enade_2011['ALVO'] =  np.where(base_enade_2011['DURACAO_PERMANENCIA'] >= 6, 'PROLONGADA','PADRÃO')
+base_enade_2011['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2011['DURACAO_PERMANENCIA'] >= 6, 1, 0)
 
 
 #juntar dataframe
@@ -113,6 +113,7 @@ base_enade = base_enade.append(base_enade_2017)
 base_enade = base_enade.append(base_enade_2014)
 base_enade = base_enade.append(base_enade_2011)
 base_enade = base_enade.dropna()
+
 print(base_enade.describe())
 print(base_enade.isnull().sum())
-base_enade.to_csv("result.csv")
+base_enade.to_csv('result.csv', index=False)
