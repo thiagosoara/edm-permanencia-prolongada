@@ -1,15 +1,14 @@
 import pandas as pd
 import numpy as np
 from pandas.core.indexes import base
-import seaborn as sns
-import matplotlib.pyplot as plt
-import plotly.express as px
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+# import plotly.express as px
 
 df_2019 = pd.read_csv('data/microdados_enade_2019.txt', sep=';', na_values=[' ',''])
 df_2017 = pd.read_csv('data/MICRODADOS_ENADE_2017.txt', sep=';', na_values=[' ',''])
 df_2014 = pd.read_csv('data/MICRODADOS_ENADE_2014.txt', sep=';', na_values=[' ',''])
 df_2011 = pd.read_csv('data/MICRODADOS_ENADE_2011.txt', sep=';', na_values=[' ',''])
-
 
 base_enade_2019 = pd.DataFrame()
 
@@ -40,7 +39,7 @@ base_enade_2019['BOLSA_ESTUDANTIL'] = df_2019['QE_I12']
 base_enade_2019['TRABALHO_DURANTE_GRAD'] = df_2019['QE_I10']
 base_enade_2019['COTAS'] = df_2019['QE_I15']
 base_enade_2019['DURACAO_PERMANENCIA'] = base_enade_2019['ANO_PROVA'] - base_enade_2019['ANO_ENTRADA'] 
-base_enade_2019['ALVO'] =  np.where(base_enade_2019['DURACAO_PERMANENCIA'] >= 6, 'PROLONGADA','PADRÃO')
+base_enade_2019['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2019['DURACAO_PERMANENCIA'] >= 6, 1, 0)
 #base_enade_2019 = base_enade_2019.dropna()
 #print(base_enade_2019.describe())
 
@@ -62,7 +61,7 @@ base_enade_2017['BOLSA_ESTUDANTIL'] = df_2017['QE_I12']
 base_enade_2017['TRABALHO_DURANTE_GRAD'] = df_2017['QE_I10']
 base_enade_2017['COTAS'] = df_2017['QE_I15']
 base_enade_2017['DURACAO_PERMANENCIA'] = base_enade_2017['ANO_PROVA'] - base_enade_2017['ANO_ENTRADA'] 
-base_enade_2017['ALVO'] =  np.where(base_enade_2017['DURACAO_PERMANENCIA'] >= 6, 'PROLONGADA','PADRÃO')
+base_enade_2017['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2017['DURACAO_PERMANENCIA'] >= 6, 1, 0)
 
 
 base_enade_2014 = pd.DataFrame()
@@ -83,7 +82,7 @@ base_enade_2014['BOLSA_ESTUDANTIL'] = df_2014['QE_I12']
 base_enade_2014['TRABALHO_DURANTE_GRAD'] = df_2014['QE_I10']
 base_enade_2014['COTAS'] = df_2014['QE_I15']
 base_enade_2014['DURACAO_PERMANENCIA'] = base_enade_2014['ANO_PROVA'] - base_enade_2014['ANO_ENTRADA'] 
-base_enade_2014['ALVO'] =  np.where(base_enade_2014['DURACAO_PERMANENCIA'] >= 6, 'PROLONGADA','PADRÃO')
+base_enade_2014['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2014['DURACAO_PERMANENCIA'] >= 6, 1, 0)
 
 base_enade_2011 = pd.DataFrame()
 
@@ -112,12 +111,13 @@ base_enade = base_enade.append(base_enade_2019)
 base_enade = base_enade.append(base_enade_2017)
 base_enade = base_enade.append(base_enade_2014)
 base_enade = base_enade.append(base_enade_2011)
-base_enade = base_enade.dropna()
+base_enade = base_enade.dropna().reset_index(drop=True)
+
+base_enade['IDADE'] = base_enade['IDADE'] - base_enade['DURACAO_PERMANENCIA']
 
 base_enade = base_enade.drop(
     columns=['DURACAO_PERMANENCIA', 'ANO_PROVA', 'ANO_ENTRADA'], axis=1,
 )
 
-print(base_enade.describe())
-print(base_enade.isnull().sum())
+print(base_enade)
 base_enade.to_csv('result.csv', index=False)
