@@ -17,8 +17,12 @@ base_enade_2019 = pd.DataFrame()
 # CURSO = ENGENHARIA DA COMPUTAÇÂO
 # AREA = CO_GRUPO = 4003
 
-df_2019 = df_2019.loc[df_2019['CO_ORGACAD'] == 10028]
-df_2019 = df_2019.loc[df_2019['CO_GRUPO'] == 4003]
+df_2019 = df_2019.query('(CO_ORGACAD==10028) and (CO_GRUPO==4003) and (CO_CATEGAD==10001 or CO_CATEGAD==10002 or CO_CATEGAD==10003 or CO_CATEGAD==115 or CO_CATEGAD==116 or CO_CATEGAD==895 or CO_CATEGAD==94)')
+
+#df_2019 = df_2019.loc[df_2019['CO_ORGACAD'] == 10028]
+#df_2019 = df_2019.loc[df_2019['CO_GRUPO'] == 4003]
+#df_2019 = df_2019.loc[df_2019['CO_CATEGAD'].isin([10001,10002,10003,115,116,895,94])]
+
 
 base_enade_2019['ANO_PROVA'] = df_2019['NU_ANO']
 base_enade_2019['ANO_ENTRADA'] = df_2019['ANO_IN_GRAD']
@@ -37,8 +41,9 @@ base_enade_2019['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2019['DURACAO_P
 
 base_enade_2017 = pd.DataFrame()
 
-df_2017 = df_2017.loc[df_2017['CO_ORGACAD'] == 10028]
-df_2017 = df_2017.loc[df_2017['CO_GRUPO'] == 4003]
+df_2017 = df_2017.query('(CO_ORGACAD==10028) and (CO_GRUPO==4003) and (CO_CATEGAD==1 or CO_CATEGAD==2 or CO_CATEGAD==3)')
+#df_2017 = df_2017.loc[df_2017['CO_ORGACAD'] == 10028]
+#df_2017 = df_2017.loc[df_2017['CO_GRUPO'] == 4003]
 
 base_enade_2017['ANO_PROVA'] = df_2017['NU_ANO']
 base_enade_2017['ANO_ENTRADA'] = df_2017['ANO_IN_GRAD']
@@ -58,8 +63,10 @@ base_enade_2017['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2017['DURACAO_P
 
 base_enade_2014 = pd.DataFrame()
 
-df_2014 = df_2014.loc[df_2014['CO_ORGACAD'] == 10028]
-df_2014 = df_2014.loc[df_2014['CO_GRUPO'] == 5809]
+
+df_2014 = df_2014.query('(CO_ORGACAD==10028) and (CO_GRUPO==5809) and (CO_CATEGAD==93 or CO_CATEGAD==116 or CO_CATEGAD==10001 or CO_CATEGAD==10002 or CO_CATEGAD==10003)')
+#df_2014 = df_2014.loc[df_2014['CO_ORGACAD'] == 10028]
+#df_2014 = df_2014.loc[df_2014['CO_GRUPO'] == 5809]
 
 base_enade_2014['ANO_PROVA'] = df_2014['NU_ANO']
 base_enade_2014['ANO_ENTRADA'] = df_2014['ANO_IN_GRAD']
