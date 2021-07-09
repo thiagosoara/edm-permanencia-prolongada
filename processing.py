@@ -96,6 +96,9 @@ base_enade = base_enade.append(base_enade_2019)
 base_enade = base_enade.dropna().reset_index(drop=True)
 
 base_enade['IDADE'] = base_enade['IDADE'] - base_enade['DURACAO_PERMANENCIA']
+base_enade = base_enade.drop(
+    columns=['DURACAO_PERMANENCIA', 'ANO_PROVA', 'ANO_ENTRADA'], axis=1,
+)
 
 print(base_enade)
 base_enade.to_csv('result.csv', index=False)
