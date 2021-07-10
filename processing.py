@@ -4,6 +4,15 @@ from pandas.core.indexes import base
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import pickle
+
+
+
 
 df_2019 = pd.read_csv('data/microdados_enade_2019.txt', sep=';', na_values=[' ',''])
 df_2017 = pd.read_csv('data/MICRODADOS_ENADE_2017.txt', sep=';', na_values=[' ',''])
@@ -96,11 +105,61 @@ base_enade = base_enade.append(base_enade_2019)
 base_enade = base_enade.dropna().reset_index(drop=True)
 
 base_enade['IDADE'] = base_enade['IDADE'] - base_enade['DURACAO_PERMANENCIA']
+
+# IMPRIME O CSV PARA BI
+print(base_enade)
+base_enade.to_csv('result_bi.csv', index=False)
+
+# INICIA TRATAMENTO DOS DADOS PARA ALGORITMOS
 base_enade = base_enade.drop(
     columns=['DURACAO_PERMANENCIA', 'ANO_PROVA', 'ANO_ENTRADA'], axis=1,
 )
 
-print(base_enade)
-base_enade.to_csv('result.csv', index=False)
+# DIVISÃO ENTRE FEATURES E CLASSE ALVO
+X_base_enade = base_enade.iloc[:, 0:10].values
+Y_base_enade = base_enade.iloc[:,10].values
 
-#base_enade.boxplot(column=['IDADE'])
+
+# LABEL ENCODER
+##CATEGORIAS ORDINAIS
+label_encoder_escolaridade_pai = LabelEncoder()
+label_encoder_escolaridade_mae = LabelEncoder()
+X_base_enade[:,3] = label_encoder_escolaridade_pai.fit_transform(X_base_enade[:,3])
+X_base_enade[:,4] = label_encoder_escolaridade_mae.fit_transform(X_base_enade[:,4])
+
+##CATEGORIAS 
+label_encoder_sexo = LabelEncoder()
+label_encoder_raca = LabelEncoder()
+label_encoder_renda_familiar = LabelEncoder()
+label_encoder_bolsa_estudantil = LabelEncoder()
+label_encoder_intercambio = LabelEncoder()
+label_encoder_trabalho_durante_grad = LabelEncoder()
+label_encoder_cotas = LabelEncoder()
+X_base_enade[:,0] = label_encoder_sexo.fit_transform(X_base_enade[:,0])
+X_base_enade[:,2] = label_encoder_raca.fit_transform(X_base_enade[:,2])
+X_base_enade[:,5] = label_encoder_renda_familiar.fit_transform(X_base_enade[:,5])
+X_base_enade[:,6] = label_encoder_bolsa_estudantil.fit_transform(X_base_enade[:,6])
+X_base_enade[:,7] = label_encoder_intercambio.fit_transform(X_base_enade[:,7])
+X_base_enade[:,8] = label_encoder_trabalho_durante_grad.fit_transform(X_base_enade[:,8])
+X_base_enade[:,9] = label_encoder_cotas.fit_transform(X_base_enade[:,9])
+
+# ONE HOT ENCODER
+onehotencoder_base_enade = ColumnTransformer(transformers=[('OneHot', OneHotEncoder(), [0,2,5,6,7,8,9])], remainder='passthrough')
+X_base_enade = onehotencoder_base_enade.fit_transform(X_base_enade).toarray()
+
+# Padronização (Standardization)
+scaler_base_enade = StandardScaler()
+X_base_enade = scaler_base_enade.fit_transform(X_base_enade)
+
+# Separação base TREINAMENTO e TESTE
+X_base_enade_treinamento, X_base_enade_teste, Y_base_enade_treinamento, Y_base_enade_teste = train_test_split(X_base_enade, Y_base_enade, test_size=0.20, random_state=0)
+
+print(X_base_enade.shape)
+print(X_base_enade_treinamento.shape, Y_base_enade_treinamento.shape)
+print(X_base_enade_teste.shape, Y_base_enade_teste.shape)
+
+with open('base_enade.pkl', mode = 'wb') as f:
+    pickle.dump([X_base_enade_treinamento, Y_base_enade_treinamento, X_base_enade_teste, Y_base_enade_teste], f)
+#np.savetxt("result_features_algoritmo.csv", X_base_enade, delimiter=",")
+#np.savetxt("result_class_algoritmo.csv", Y_base_enade, delimiter=",")
+
