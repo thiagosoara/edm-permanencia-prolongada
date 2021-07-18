@@ -270,13 +270,52 @@ def function1(base_enade):
     # np.savetxt("result_class_algoritmo.csv", Y_base_enade, delimiter=",")
 
 
+def map_age(age):
+    if age < 19:
+        return '<19'
+    if age < 22:
+        return '<22'
+    return '>21'
+
+
+def categorize(dataset):
+
+    dataset1 = dataset.drop(columns=['ANO_PROVA', 'ANO_ENTRADA', 'DURACAO_PERMANENCIA'])
+
+    dataset1['PERMANENCIA_PROLONGADA'] = dataset1['PERMANENCIA_PROLONGADA'] == 1
+    dataset1['COTAS'] = dataset1['COTAS'] != 'A'
+    dataset1['TRABALHO_DURANTE_GRAD'] = dataset1['TRABALHO_DURANTE_GRAD'] != 'A'
+    dataset1['INTERCAMBIO'] = dataset1['INTERCAMBIO'] != 'A'
+    dataset1['BOLSA_ESTUDANTIL'] = dataset1['BOLSA_ESTUDANTIL'] != 'A'
+    dataset1['AUXILIO_ESTUDANTIL'] = dataset1['AUXILIO_ESTUDANTIL'] != 'A'
+    dataset1['SOLTEIRO'] = dataset1['ESTADO_CIVIL'] == 'A'
+    dataset1['PRINCIPAL_MOTIVACAO'] = dataset1['PRINCIPAL_MOTIVACAO'] == 'E'
+    dataset1['ENSINO_MEDIO'] = dataset1['ENSINO_MEDIO'].map({
+        'A': 'PUB',
+        'B': 'PRI',
+        'C': 'EXT',
+        'D': 'PUB',
+        'E': 'PRI',
+        'F': 'EXT',
+    })
+
+    dataset1['ESCOLARIDADE'] = (dataset1['ESCOLARIDADE_PAI'] > 3) | (dataset1['ESCOLARIDADE_MAE'] > 3)
+
+    dataset1['IDADE'] = dataset1['IDADE'].apply(map_age)
+
+    return dataset1.drop(columns=['ESCOLARIDADE_PAI', 'ESCOLARIDADE_MAE', 'ESTADO_CIVIL'])
+
+
 def main():
     dataset = mount_dataset()
     dataset = create_sequencing(dataset)
 
-    dataset.to_csv('storage/result_bi.csv', index=False)
-
+    dataset.to_csv('storage/dataset_bi.csv', index=False)
     print(dataset)
+
+    dataset_apriori = categorize(dataset)
+    dataset.to_csv('storage/dataset_apriori.csv', index=False)
+    print(dataset_apriori)
 
     # function2(dataset).to_csv('result_knime.csv', index=False)
 
