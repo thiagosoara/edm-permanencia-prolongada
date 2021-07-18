@@ -314,7 +314,7 @@ def main():
     print(dataset)
 
     dataset_apriori = categorize(dataset)
-    dataset.to_csv('storage/dataset_apriori.csv', index=False)
+    dataset_apriori.to_csv('storage/dataset_apriori.csv', index=False)
     print(dataset_apriori)
 
     # function2(dataset).to_csv('result_knime.csv', index=False)
