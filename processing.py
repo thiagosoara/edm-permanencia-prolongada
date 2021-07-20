@@ -299,7 +299,8 @@ def categorize(dataset):
         'F': 'EXT',
     })
 
-    dataset1['ESCOLARIDADE'] = (dataset1['ESCOLARIDADE_PAI'] > 3) | (dataset1['ESCOLARIDADE_MAE'] > 3)
+    dataset1['ENS_SUP_PAI'] = dataset1['ESCOLARIDADE_PAI'] > 3
+    dataset1['ENS_SUP_MAE'] = dataset1['ESCOLARIDADE_MAE'] > 3
 
     dataset1['IDADE'] = dataset1['IDADE'].apply(map_age)
 
