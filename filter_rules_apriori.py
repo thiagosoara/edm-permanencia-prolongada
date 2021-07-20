@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def read_file(filename):
     lines = []
 
@@ -33,8 +34,8 @@ def process_rule(rule):
     rule = output.split('|')
 
     return {
-        'rule': rule[0].strip(), #.split(' '),
-        'implies': rule[2].strip(), #.split(' '),
+        'rule': rule[0].strip(),  # .split(' '),
+        'implies': rule[2].strip(),  # .split(' '),
         'coverage': '{:.2f}'.format(int(rule[1]) / 3184),
         'confidence': rule[4].replace('conf:', ''),
         'lift': rule[5].replace('lift:', ''),
