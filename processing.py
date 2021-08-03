@@ -92,6 +92,7 @@ base_enade_2014['COTAS'] = df_2014['QE_I15']
 base_enade_2014['DURACAO_PERMANENCIA'] = base_enade_2014['ANO_PROVA'] - base_enade_2014['ANO_ENTRADA'] 
 base_enade_2014['PERMANENCIA_PROLONGADA'] =  np.where(base_enade_2014['DURACAO_PERMANENCIA'] >= 6, 1, 0)
 
+
 #juntar dataframe
 print(base_enade_2014.describe(include="all"))
 print(base_enade_2017.describe(include="all"))
@@ -126,6 +127,7 @@ label_encoder_escolaridade_pai = LabelEncoder()
 label_encoder_escolaridade_mae = LabelEncoder()
 X_base_enade[:,3] = label_encoder_escolaridade_pai.fit_transform(X_base_enade[:,3])
 X_base_enade[:,4] = label_encoder_escolaridade_mae.fit_transform(X_base_enade[:,4])
+#Renda familiar
 
 ##CATEGORIAS 
 label_encoder_sexo = LabelEncoder()
