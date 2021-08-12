@@ -280,7 +280,7 @@ def map_age(age):
 
 def categorize(dataset):
 
-    dataset1 = dataset.drop(columns=['ANO_PROVA', 'ANO_ENTRADA', 'DURACAO_PERMANENCIA'])
+    dataset1 = dataset.copy()
 
     dataset1['PERMANENCIA_PROLONGADA'] = dataset1['PERMANENCIA_PROLONGADA'] == 1
     dataset1['COTAS'] = dataset1['COTAS'] != 'A'
@@ -299,26 +299,36 @@ def categorize(dataset):
         'F': 'EXT',
     })
 
+    return dataset1.drop(columns=['ESTADO_CIVIL'])
+
+
+def order_to_group(dataset):
+    dataset1 = dataset.copy()
+
     dataset1['ENS_SUP_PAI'] = dataset1['ESCOLARIDADE_PAI'] > 3
     dataset1['ENS_SUP_MAE'] = dataset1['ESCOLARIDADE_MAE'] > 3
 
     dataset1['IDADE'] = dataset1['IDADE'].apply(map_age)
 
-    return dataset1.drop(columns=['ESCOLARIDADE_PAI', 'ESCOLARIDADE_MAE', 'ESTADO_CIVIL'])
+    return dataset1.drop(columns=['ESCOLARIDADE_PAI', 'ESCOLARIDADE_MAE'])
 
 
 def main():
     dataset = mount_dataset()
     dataset = create_sequencing(dataset)
+    dataset = categorize(dataset)
 
     dataset.to_csv('storage/dataset_bi.csv', index=False)
+
+    dataset = dataset.drop(columns=['ANO_PROVA', 'ANO_ENTRADA', 'DURACAO_PERMANENCIA'])
     print(dataset)
 
-    dataset_apriori = categorize(dataset)
-    dataset_apriori.to_csv('storage/dataset_apriori.csv', index=False)
-    print(dataset_apriori)
+    dataset.to_csv('storage/dataset_desicion_tree.csv', index=False)
+    print(dataset)
 
-    # function2(dataset).to_csv('result_knime.csv', index=False)
+    dataset = order_to_group(dataset)
+    dataset.to_csv('storage/dataset_apriori.csv', index=False)
+    print(dataset)
 
 
 if __name__ == '__main__':
